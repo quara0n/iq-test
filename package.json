@@ -3,13 +3,14 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "npm rebuild sqlite3"
   },
   "dependencies": {
+    "nodemailer": "^6.10.0",
     "@sendgrid/mail": "^7.7.0",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "nodemailer": "^6.10.0",
-    "sqlite3": "^5.1.7"
+    "sqlite3": "^5.1.6"
   }
 }
