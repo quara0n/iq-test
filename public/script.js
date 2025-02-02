@@ -32,14 +32,21 @@ const questionText = document.getElementById("question-text");
 const answerOptions = document.getElementById("answer-options");
 const nextBtn = document.getElementById("next-btn");
 const progressBar = document.getElementById("progress-bar");
+
+// Ensure the email page is hidden on initial load:
+emailPage.classList.add("hidden");
+
+// Make sure these elements exist in your HTML with the corresponding IDs:
 const emailInput = document.getElementById("email-input");
 const sendEmailBtn = document.getElementById("send-email-btn");
 const scoreMessage = document.getElementById("score-message");
+const trustedBadge = document.querySelector(".trusted-badge"); // Selects the trusted badge
 
 // Start Quiz
 document.getElementById("start-btn").addEventListener("click", () => {
-    landingPage.classList.add("hidden");
-    quizPage.classList.remove("hidden");
+    landingPage.classList.add("hidden"); // Hide landing page
+    quizPage.classList.remove("hidden"); // Show quiz page
+    trustedBadge.classList.add("hidden"); // Hide trusted badge
     loadQuestion();
 });
 
@@ -69,6 +76,7 @@ function selectAnswer(button, correctAnswer) {
         button.classList.add("wrong");
     }
 
+    // Disable all answer buttons after selection
     [...answerOptions.children].forEach((btn) => (btn.disabled = true));
     nextBtn.disabled = false;
 }
@@ -81,6 +89,7 @@ nextBtn.addEventListener("click", () => {
     if (currentQuestion < questions.length) {
         loadQuestion();
     } else {
+        // When quiz is done, hide quiz page and show email page
         quizPage.classList.add("hidden");
         emailPage.classList.remove("hidden");
         scoreMessage.textContent = `You scored ${score} out of ${questions.length}!`;

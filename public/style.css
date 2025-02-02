@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+
 /* General Reset */
 * {
     margin: 0;
@@ -7,26 +9,58 @@
 
 /* Body */
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(135deg, #1e3c72, #2a5298);
-    color: #ffffff;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #f6f9fc, #e9eff5);
+    color: #333;
     height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
+    flex-direction: column; /* Ensures stacking instead of side alignment */
     overflow: hidden;
+}
+
+/* Wrapper to keep elements together */
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Ensures both elements stay centered */
+    width: 100%;
 }
 
 /* Content Container */
 .container {
-    max-width: 600px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(8px);
+    max-width: 700px;
+    padding: 40px;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
     transition: opacity 0.5s ease-in-out;
+}
+
+/* Trusted Badge - Directly Below the Box */
+.trusted-badge {
+    margin-top: 8px; /* Adjust distance from the box */
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(46, 134, 222, 0.8); /* Soft blue */
+    font-style: italic;
+    text-align: center;
+    
+    
+}
+
+/* Hidden Class (Used for JavaScript Toggle) */
+.hidden {
+    display: none;
+}
+/* Star Styling */
+.star {
+    color: gold;
+    font-size: 1.2rem;
+    margin-left: 5px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 
 /* Hidden Class */
@@ -34,35 +68,35 @@ body {
     display: none;
 }
 
-/* Buttons */
+/* Primary Action Button */
 button {
-    background-color: #4e9afb;
+    background-color: #2e86de;
     color: #ffffff;
     font-size: 1.1rem;
-    padding: 12px 25px;
+    padding: 14px 30px;
     border: none;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
     margin-top: 20px;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 button:hover {
-    background-color: #3d78c2;
+    background-color: #1b4f72;
     transform: translateY(-2px);
 }
 
 button:disabled {
-    background-color: gray;
+    background-color: #ccc;
     cursor: not-allowed;
 }
 
 /* Progress Bar */
 #progress-bar-container {
     width: 100%;
-    height: 10px;
+    height: 12px;
     background-color: #ddd;
-    border-radius: 5px;
+    border-radius: 6px;
     margin-bottom: 20px;
     overflow: hidden;
 }
@@ -70,33 +104,58 @@ button:disabled {
 #progress-bar {
     height: 100%;
     width: 0%;
-    background-color: #4caf50;
+    background-color: #2e86de;
     transition: width 0.4s ease;
 }
 
-/* Answer Buttons */
+/* Answer Buttons (Alternative Options) */
 .answer-btn {
     display: block;
-    background-color: rgba(255, 255, 255, 0.2);
-    border: none;
-    padding: 12px;
+    background-color: #e0e0e0;
+    border: 1px solid #bbb;
+    padding: 14px;
     margin: 10px 0;
-    font-size: 1rem;
-    border-radius: 8px;
+    font-size: 1.1rem;
+    border-radius: 6px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, border-color 0.3s;
+    text-align: left;
+    color: #222;
 }
 
 .answer-btn:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: #d5d5d5;
+    border-color: #999;
 }
 
+/* Correct Answer Button */
 .correct {
-    background-color: #4caf50 !important;
+    background-color: #28a745 !important;
     color: white;
 }
 
+/* Wrong Answer Button */
 .wrong {
-    background-color: #f44336 !important;
+    background-color: #dc3545 !important;
     color: white;
+}
+
+/* === Scaling for Specific Pages === */
+
+/* Welcome Page: 2× Scale */
+.welcome {
+    transform: scale(2);
+    transform-origin: top center;
+}
+
+/* Question Pages: 1× Scale (default size) */
+.question {
+    transform: scale(2);
+    transform-origin: top center;
+}
+
+/* Email Page: 2× Scale */
+.email {
+    transform: scale(1.5);
+    transform-origin: top center;
 }
