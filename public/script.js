@@ -36,11 +36,16 @@ const progressBar = document.getElementById("progress-bar");
 // Ensure the email page is hidden on initial load:
 emailPage.classList.add("hidden");
 
-// Make sure these elements exist in your HTML with the corresponding IDs:
+// Get necessary DOM elements for certificate
+const nameInput = document.getElementById("name-input"); // Ensure this exists in HTML
 const emailInput = document.getElementById("email-input");
 const sendEmailBtn = document.getElementById("send-email-btn");
 const scoreMessage = document.getElementById("score-message");
-const trustedBadge = document.querySelector(".trusted-badge"); // Selects the trusted badge
+const trustedBadge = document.querySelector(".trusted-badge");
+const certificatePage = document.getElementById("certificate-page");
+const certificateName = document.getElementById("certificate-name");
+const certificateScore = document.getElementById("certificate-score");
+const downloadCertificateBtn = document.getElementById("download-certificate-btn");
 
 // Start Quiz
 document.getElementById("start-btn").addEventListener("click", () => {
@@ -96,12 +101,48 @@ nextBtn.addEventListener("click", () => {
     }
 });
 
-// Send Email
+// Submit Email and Generate Certificate
 sendEmailBtn.addEventListener("click", () => {
-    const email = emailInput.value.trim();
-    if (email) {
-        alert(`Your score: ${score}/${questions.length}. Results sent to: ${email}`);
+    const userName = nameInput.value.trim();
+    const userEmail = emailInput.value.trim();
+
+    if (userName && userEmail) {
+        // Display the certificate with the user's details
+        certificateName.textContent = userName;
+        certificateScore.textContent = `${score} out of ${questions.length}`;
+        emailPage.classList.add("hidden");
+        certificatePage.classList.remove("hidden");
+
+        // Generate the certificate and send email
+        generateCertificate(userName, score, userEmail);
     } else {
-        alert("Please enter a valid email.");
+        alert("Please enter both your name and email.");
     }
 });
+
+// Function to generate and send the certificate
+function generateCertificate(name, score, email) {
+    html2canvas(document.getElementById("certificate-page")).then(canvas => {
+        const imgData = canvas.toDataURL("image/png");
+
+        // Use EmailJS or a backend API to send the email
+        sendEmailWithCertificate(name, email, imgData);
+    }).catch(error => {
+        console.error("Error generating certificate:", error);
+        alert("Failed to generate certificate. Please try again.");
+    });
+}
+
+// Function to send email using EmailJS
+function sendEmailWithCertificate(name, email, certificateImage) {
+    emailjs.send("YOUR_SERVICE_ID", "YOUR_TEMPLATE_ID", {
+        name: name,
+        email: email,
+        certificate_image: certificateImage
+    }).then(() => {
+        alert(`Certificate sent to ${email}`);
+    }).catch(error => {
+        console.error("Email failed:", error);
+        alert("Failed to send certificate. Please try again.");
+    });
+}

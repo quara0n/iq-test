@@ -36,11 +36,39 @@
 
     <!-- Email Page -->
     <div class="email container hidden" id="email-page">
-      <h2>Enter Your Email</h2>
-      <p>Please provide your email to receive your results.</p>
-      <input type="email" id="email-input" placeholder="Your email" />
+      <h2>Enter Your Details</h2>
+      <p>Please provide your name and email to receive your results.</p>
+
+      <label for="name-input">Name:</label>
+      <input type="text" id="name-input" placeholder="Your name" required />
+
+      <label for="email-input">Email:</label>
+      <input type="email" id="email-input" placeholder="Your email" required />
+
       <button id="send-email-btn">Submit</button>
       <p id="score-message"></p>
     </div>
   </body>
 </html>
+<!-- Email Page -->
+<div class="email container hidden" id="email-page">
+  <h2>Enter Your Details</h2>
+  <p>Please provide your name and email to receive your results.</p>
+
+  <input type="text" id="name-input" placeholder="Your name" required />
+  <input type="email" id="email-input" placeholder="Your email" required />
+
+  <button id="send-email-btn">Submit</button>
+  <p id="score-message"></p>
+</div>
+
+<!-- Certificate Page (Initially Hidden) -->
+<div class="certificate container hidden" id="certificate-page">
+  <h2>Certificate of Achievement</h2>
+  <p>This certifies that</p>
+  <h3 id="certificate-name">[Your Name]</h3>
+  <p>has successfully completed the Nordic IQ Test with a score of</p>
+  <h3 id="certificate-score">[Score]</h3>
+  <p>Trusted by The World IQ Association</p>
+  <button id="download-certificate-btn">Download Certificate</button>
+</div>
