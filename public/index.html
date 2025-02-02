@@ -1,36 +1,36 @@
 <!DOCTYPE html>
-<html lang="no">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IQ-test</title>
+    <title>Nordic IQ Test</title>
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
 </head>
 <body>
-    <div class="container">
-        <!-- Progress bar -->
-        <div id="progress-container">
+    <!-- Landing Page -->
+    <div class="container" id="landing-page">
+        <h1>Welcome to the Nordic IQ Test</h1>
+        <p>Take a quick IQ test and get your score instantly!</p>
+        <button id="start-btn">Start Quiz</button>
+    </div>
+
+    <!-- Quiz Page -->
+    <div class="container hidden" id="quiz-page">
+        <div id="progress-bar-container">
             <div id="progress-bar"></div>
         </div>
+        <h2 id="question-text"></h2>
+        <div id="answer-options"></div>
+        <button id="next-btn" disabled>Next</button>
+    </div>
 
-        <!-- Spørsmål -->
-        <div id="quiz-card">
-            <h2 id="question-text">Velkommen til IQ-testen!</h2>
-            <div id="question-image" style="display: none;">
-                <img id="image" src="" alt="Question image">
-            </div>
-            <div id="answer-options" class="answer-grid"></div>
-            <button id="next-btn" disabled>Neste</button>
-        </div>
-
-        <!-- E-postskjema -->
-        <div id="email-form" style="display: none;">
-            <h2>Vil du vite poengsummen din?</h2>
-            <p>Fyll inn e-posten din, så sender vi resultatet ditt.</p>
-            <input type="email" id="email-input" placeholder="Skriv inn e-posten din" required>
-            <button id="send-email-btn">Send resultat</button>
-        </div>
+    <!-- Email Page -->
+    <div class="container hidden" id="email-page">
+        <h2>All Done!</h2>
+        <p>Your quiz is complete. Enter your email to get your results:</p>
+        <input type="email" id="email-input" placeholder="Enter your email" />
+        <button id="send-email-btn">Submit</button>
     </div>
 </body>
 </html>

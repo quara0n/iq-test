@@ -1,111 +1,98 @@
 const questions = [
     {
-        text: "Hva er 2 + 2?",
-        options: ["3", "4", "5"],
-        correct: "4"
+        text: "What is 2 + 2?",
+        options: ["3", "4", "5", "6"],
+        correct: "4",
     },
     {
-        text: "Hva er hovedstaden i Norge?",
-        options: ["Stockholm", "Oslo", "København"],
-        correct: "Oslo"
+        text: "What is the capital of Norway?",
+        options: ["Stockholm", "Oslo", "Copenhagen", "Helsinki"],
+        correct: "Oslo",
     },
     {
-        text: "Hvilken farge får du hvis du blander blått og gult?",
-        options: ["Grønn", "Lilla", "Oransje"],
-        correct: "Grønn"
+        text: "What color do you get when you mix blue and yellow?",
+        options: ["Green", "Purple", "Orange", "Red"],
+        correct: "Green",
     },
     {
-        text: "Hvilket dyr er kjent som 'Kongen av jungelen'?",
-        options: ["Løve", "Tiger", "Elefant"],
-        correct: "Løve"
-    }
+        text: "What animal is known as the 'King of the Jungle'?",
+        options: ["Lion", "Tiger", "Elephant", "Cheetah"],
+        correct: "Lion",
+    },
 ];
 
 let currentQuestion = 0;
 let score = 0;
 
+// DOM Elements
+const landingPage = document.getElementById("landing-page");
+const quizPage = document.getElementById("quiz-page");
+const emailPage = document.getElementById("email-page");
 const questionText = document.getElementById("question-text");
 const answerOptions = document.getElementById("answer-options");
 const nextBtn = document.getElementById("next-btn");
 const progressBar = document.getElementById("progress-bar");
-const emailForm = document.getElementById("email-form");
 const emailInput = document.getElementById("email-input");
 const sendEmailBtn = document.getElementById("send-email-btn");
+const scoreMessage = document.getElementById("score-message");
 
+// Start Quiz
+document.getElementById("start-btn").addEventListener("click", () => {
+    landingPage.classList.add("hidden");
+    quizPage.classList.remove("hidden");
+    loadQuestion();
+});
+
+// Load Question
 function loadQuestion() {
     const question = questions[currentQuestion];
     questionText.textContent = question.text;
     answerOptions.innerHTML = "";
 
-    question.options.forEach(option => {
+    question.options.forEach((option) => {
         const button = document.createElement("button");
         button.textContent = option;
-        button.onclick = () => selectAnswer(button, question.correct);
+        button.classList.add("answer-btn");
+        button.addEventListener("click", () => selectAnswer(button, question.correct));
         answerOptions.appendChild(button);
     });
+
+    nextBtn.disabled = true;
 }
 
+// Select Answer
 function selectAnswer(button, correctAnswer) {
-    const buttons = answerOptions.querySelectorAll("button");
-    buttons.forEach(btn => btn.disabled = true);
-
     if (button.textContent === correctAnswer) {
-        button.style.backgroundColor = "#28a745";
+        button.classList.add("correct");
         score++;
     } else {
-        button.style.backgroundColor = "#dc3545";
+        button.classList.add("wrong");
     }
 
+    [...answerOptions.children].forEach((btn) => (btn.disabled = true));
     nextBtn.disabled = false;
 }
 
-function nextQuestion() {
+// Next Question
+nextBtn.addEventListener("click", () => {
     currentQuestion++;
     progressBar.style.width = `${(currentQuestion / questions.length) * 100}%`;
 
     if (currentQuestion < questions.length) {
         loadQuestion();
-        nextBtn.disabled = true;
     } else {
-        showEmailForm();
+        quizPage.classList.add("hidden");
+        emailPage.classList.remove("hidden");
+        scoreMessage.textContent = `You scored ${score} out of ${questions.length}!`;
     }
-}
+});
 
-function showEmailForm() {
-    document.getElementById("quiz-card").style.display = "none";
-    emailForm.style.display = "block";
-}
-
-function sendEmail() {
-    const email = emailInput.value;
+// Send Email
+sendEmailBtn.addEventListener("click", () => {
+    const email = emailInput.value.trim();
     if (email) {
-        fetch("/send-email", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                email: email,
-                score: score,
-                totalQuestions: questions.length
-            })
-        })
-        .then(response => {
-            if (response.ok) {
-                alert("Resultatet er sendt til e-posten din!");
-                emailInput.value = "";
-            } else {
-                alert("Kunne ikke sende e-post. Prøv igjen senere.");
-            }
-        })
-        .catch(error => console.error("Feil:", error));
+        alert(`Your score: ${score}/${questions.length}. Results sent to: ${email}`);
     } else {
-        alert("Vennligst fyll inn en gyldig e-postadresse.");
+        alert("Please enter a valid email.");
     }
-}
-
-nextBtn.addEventListener("click", nextQuestion);
-sendEmailBtn.addEventListener("click", sendEmail);
-
-// Last inn første spørsmål
-loadQuestion();
+});
