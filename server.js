@@ -1,23 +1,28 @@
-const express = require("express");
-const nodemailer = require("nodemailer");
-const sqlite3 = require("sqlite3").verbose(); // Bruk SQLite
+const express = require('express');
+const sqlite3 = require('sqlite3').verbose();
+const sgMail = require('@sendgrid/mail');
+require('dotenv').config(); // Load environment variables from .env file
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-app.use(express.static("public"));
+// Set SendGrid API key
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+// Middleware for serving static files and parsing JSON requests
+app.use(express.static('public'));
 app.use(express.json());
 
-// Opprett SQLite-database
-const db = new sqlite3.Database("./results.db", (err) => {
+// Connect to SQLite database
+const db = new sqlite3.Database('./results.db', (err) => {
     if (err) {
-        console.error("Kunne ikke koble til databasen:", err.message);
+        console.error('Could not connect to SQLite database:', err.message);
     } else {
-        console.log("Koblet til SQLite-database.");
+        console.log('Connected to SQLite database.');
     }
 });
 
-// Opprett tabell for å lagre resultater
+// Create the `results` table if it doesn't exist
 db.run(`
     CREATE TABLE IF NOT EXISTS results (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -27,51 +32,49 @@ db.run(`
     )
 `);
 
-// Nodemailer-konfigurasjon
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: "din_email@gmail.com", // Sett inn din Gmail-adresse
-        pass: "ditt_passord"         // Bruk app-passord hvis du har 2FA aktivert
-    }
-});
-
-// Rute for å lagre resultater og sende e-post
-app.post("/send-email", (req, res) => {
+// Route for handling email submission
+app.post('/send-email', (req, res) => {
     const { email, score, totalQuestions } = req.body;
 
-    // Lagre resultat i databasen
+    // Validate recipient email
+    if (!email) {
+        return res.status(400).send('Email address is required.');
+    }
+
+    // Save the result in the database
     db.run(
         `INSERT INTO results (email, score, total_questions) VALUES (?, ?, ?)`,
         [email, score, totalQuestions],
         function (err) {
             if (err) {
-                console.error("Kunne ikke lagre resultat:", err.message);
-                return res.status(500).send("Kunne ikke lagre resultat.");
+                console.error('Failed to save result:', err.message);
+                return res.status(500).send('Could not save result.');
             }
 
-            // Send e-post med resultat
-            const mailOptions = {
-                from: "din_email@gmail.com", // Din Gmail-adresse
-                to: email,
-                subject: "IQ-test Resultat",
-                text: `Hei! Du fikk ${score} av ${totalQuestions} riktige på IQ-testen vår. Gratulerer!`
+            // Prepare the email message
+            const msg = {
+                to: email, // Recipient's email
+                from: 'finne89@gmail.com', // Use your verified sender email
+                subject: 'Your IQ Test Results',
+                text: `Hello! You scored ${score} out of ${totalQuestions} on the IQ test. Great job!`,
             };
 
-            transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                    console.error("Kunne ikke sende e-post:", error.message);
-                    return res.status(500).send("Kunne ikke sende e-post.");
-                }
-
-                console.log("E-post sendt:", info.response);
-                res.status(200).send("Resultatet er sendt på e-post!");
-            });
+            // Send the email using SendGrid
+            sgMail
+                .send(msg)
+                .then(() => {
+                    console.log(`Email sent successfully to ${email}!`);
+                    res.status(200).send('Result has been sent to your email!');
+                })
+                .catch((error) => {
+                    console.error('Error sending email:', error.response ? error.response.body : error.message);
+                    res.status(500).send('Could not send email. Please try again later.');
+                });
         }
     );
 });
 
-// Start serveren
+// Start the server
 app.listen(PORT, () => {
     console.log(`Server running at http://localhost:${PORT}`);
 });
